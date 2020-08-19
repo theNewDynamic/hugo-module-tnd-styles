@@ -1,0 +1,18 @@
+{{ $styles := partialCached "tnd-styles/private/GetStyleAssets" "GetStyleAssets" }}
+{{ range where $styles "type" "==" "critical" }}
+  {{ with .style }}
+    <style>{{ .Content | safeCSS }}</style>
+  {{ end }}
+{{ end }}
+{{ range where $styles "type" "!=" "critical" }}
+  {{ with .style }}
+    <link 
+      rel="stylesheet"
+      href="{{ .RelPermalink }}"
+    >
+  {{ end }}
+{{ end }}
+
+{{ range resources.Match "fonts/**/*.woff*" }}
+  <link as="font" crossorigin="" href="{{ .Permalink }}" rel="prefetch">
+{{ end }}

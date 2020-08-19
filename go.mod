@@ -1,3 +1,3 @@
-module github.com/theNewDynamic/hugo-module-tnd-{moduleName}
+module github.com/theNewDynamic/hugo-module-tnd-styles
 
 go 1.14

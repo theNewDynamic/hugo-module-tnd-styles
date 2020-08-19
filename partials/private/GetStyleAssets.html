@@ -1,0 +1,42 @@
+{{ $style_assets := slice }}
+{{ $return := slice }}
+
+{{ $to_bundle := slice }}
+{{/* We look for a style.* file */}}
+{{ with resources.GetMatch "css/style.*" }}
+  {{ $style := false }}
+  {{/* If the resource type is scss or sass, we use the sass logic
+    we will generate a tailwind file, concatenate it with the processed sass and PostCSS it. */}}
+  {{ if eq .ResourceType "scss" "sass" }}
+    {{ $scss := . | toCSS }}
+    {{ $tailwind := `
+
+    /* purgecss start ignore */
+    @import "tailwindcss/base";
+    
+    @import "tailwindcss/components";
+    
+    /* purgecss end ignore */
+    
+    @import "tailwindcss/utilities";
+    ` }}
+    {{ $tailwind := $tailwind | resources.FromString "tailwind.css" }}
+    {{ $style = resources.Concat "style.css" (slice $tailwind $scss) }}
+  {{ end }}
+  {{ $style = . | resources.PostCSS }}
+  {{ $style_assets = $style_assets | append (dict "style" $style "type" "link") }}
+{{ end }}
+
+{{ with resources.Get "fonts/index.css" }}
+  {{ $style_assets = $style_assets | append (dict "style" . "type" "critical") }}
+{{ end }}
+
+{{ range $style_assets }}
+  {{ $style := . }}
+  {{ if and (not site.IsServer) (ne .type "critical") }}
+    {{ $style = dict "type" .type "style" (.style | minify | fingerprint | resources.PostProcess) }}
+  {{ end }}
+  {{ $return = $return | append $style }}
+{{ end }}
+
+{{ return $return }}

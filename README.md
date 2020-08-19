@@ -1,16 +1,14 @@
-This is a template repo. To start.
+# TND Styles Hugo Module
 
-search `{moduleName}` through the project and replace it with the module identifier (ex: `socials` for `hugo-module-tnd-socials`)
+This is a Hugo Module set to be used internally by TND but not ready for distribution outside of TND. Use at your own risk.
 
-# {moduleName} Hugo Module
-
-(intro)
+The module uses Hugo Pipes to process stylesheet files with SASS and/or Tailwindcss. It also make sure self hostesd fonts are loaded properly. 
 
 ## Requirements
 
 Requirements:
 - Go 1.14
-- Hugo 0.61.0
+- Hugo 0.64.0
 
 
 ## Installation
@@ -27,33 +25,69 @@ Configure your project's module to import this module:
 # config.yaml
 module:
   imports:
-  - path: github.com/theNewDynamic/hugo-module-tnd-{moduleName}
+  - path: github.com/theNewDynamic/hugo-module-tnd-styles
 ```
 
 ## Usage
 
-### Some Partial/Feature
+User should respect a file structure in its asset directory:
 
-#### Examples
-
-### Settings
-
-Settings are added to the project's parameter under the `tnd_{moduleName}` map as shown below.
-
-```yaml
-# config.yaml
-params:
-  tnd_{moduleName}:
-    [...]
+```
+assets
+├── css
+│   ├── style.css
+│   └── tailwindcss
+│       ├── modules
+│       │   ├── _hovers.css
+│       │   ├── _buttons.css
+│       │   └── _cards.css
+│       └── tailwind.config.js
+├── fonts
+│   ├── files
+│   │   ├── play-v11-latin-regular.woff
+│   │   └── play-v11-latin-regular.woff2
+│   └── index.css
 ```
 
-#### Configure Key 1
+### Tailwind and PostCSS
 
-#### Configure Key 2
+In order to use Tailwind and/or PostCSS user should 
+1. install the following npm deps:
+```
+npm install postcss-cli postcss-import tailwindcss autoprefixer
+```
+2. Add a postcss.config.js file at the root of the repo:
+```
+const purgecss = require("@fullhuman/postcss-purgecss")({
+	content: ["./hugo_stats.json"],
+	defaultExtractor: (content) => {
+		let els = JSON.parse(content).htmlElements;
+		return els.tags.concat(els.classes, els.ids);
+	},
+	whitelist: [
+		"extra_class"
+	],
+});
+module.exports = {
+	plugins: [
+		require("postcss-import")({
+			path: ["assets/css"],
+		}),
+		require("tailwindcss")("./assets/css/tailwindcss/tailwind.config.js"),
+		require("autoprefixer"),
+		...(process.env.HUGO_ENV !== "development" ? [purgecss] : []),
+	],
+};
+```
 
-#### Defaults
+### Fonts
 
-ld copy/paste the above to your settings and append with new extensions.
+Add a `assets/fonts/index.css` containing the fontface declarations
+Add the font files to `assets/fonts/files`
+
+### tnd-styles/tags
+
+The partial should be invoked in your `<head>` and will print all the necessary Stylesheet tags.
 
 ## theNewDynamic
 
