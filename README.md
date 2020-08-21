@@ -103,7 +103,7 @@ tnd_styles:
 
 With the presents of the following files:
 
-````
+```
 assets/fonts
 └── files
     ├── open-sans-v17-latin-300.eot
@@ -197,6 +197,7 @@ Will produce the following fontface declarations
 	url("/fonts/files/open-sans-v17-latin-700italic.woff2") format(woff2);
 }
 ```
+
 The module also prefetches every declared font files
 
 ## Usage
