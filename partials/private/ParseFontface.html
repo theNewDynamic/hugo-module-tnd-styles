@@ -1,0 +1,49 @@
+{{/*
+  ParseFontface
+  Turns a Font declaration data into fontface ready parseable data.
+
+  @author @regisphilibert
+
+  @context Map
+
+  @access private
+
+  @use
+    - private/ParseFont
+
+  @return Map
+    String (.font-family)
+    String (.src)
+    String (.font-weight)?
+    String (.font-style)?
+    String (.font-display)?
+
+*/}}
+
+{{ $s := newScratch }}
+{{ $s.Set "font" dict }}
+
+{{ with partialCached "tnd-styles/private/ParseFont" . . }}
+  {{ with .resources }}
+    {{ $css_srcs := slice }}
+    {{ range . }}
+      {{ $format := .MediaType.SubType }}
+      {{ if eq $format "vnd.ms-fontobject" }}
+        {{ $format = "embedded-opentype" }}
+      {{ end }}
+      {{ $css_srcs = $css_srcs | append (printf `url("%s") format(%s)` .RelPermalink $format) }}
+    {{ end }}
+    {{ with $css_srcs }}
+      {{ $s.SetInMap "font" "src" (delimit . ", ") }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ range $property := slice "family" "weight" "style" "display" }}
+  {{ with index $ . }}
+    {{ $key := print "font-" $property }}
+    {{ $s.SetInMap "font" $key . }}
+  {{ end }}
+{{ end }}
+
+{{ return $s.Get "font" }}

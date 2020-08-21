@@ -1,9 +1,28 @@
+{{/*
+  tags.html
+  Prints all the necessary tags for stylesheets, fonts etc...
+
+  @author @regisphilibert
+
+  @context Any (.)
+
+  @access public
+
+  @example - Go Template
+    <head>
+      [...]
+      {{ partialCached "tnd-styles/tags.html" . }}
+      [...]
+    </head>
+*/}}
 {{ $styles := partialCached "tnd-styles/private/GetStyleAssets" "GetStyleAssets" }}
+
 {{ range where $styles "type" "==" "critical" }}
   {{ with .style }}
     <style>{{ .Content | safeCSS }}</style>
   {{ end }}
 {{ end }}
+
 {{ range where $styles "type" "!=" "critical" }}
   {{ with .style }}
     <link 
@@ -13,6 +32,8 @@
   {{ end }}
 {{ end }}
 
-{{ range resources.Match "fonts/**/*.woff*" }}
-  <link as="font" crossorigin="" href="{{ .Permalink }}" rel="prefetch">
+{{ range partialCached "tnd-styles/private/GetFonts" . }}
+  {{ range .resources }}
+    <link as="font" crossorigin="" href="{{ .Permalink }}" rel="prefetch">
+  {{ end }}
 {{ end }}

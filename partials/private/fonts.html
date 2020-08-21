@@ -1,0 +1,23 @@
+{{/*
+  fonts.html
+  Prints the fontface declaration of a given font
+  
+  @author @regisphilibert
+
+  @context Any (.)
+
+  @access private
+
+  @use
+    - private/GetFonts
+    - private/ParseFontface
+*/}}
+{{- range partialCached "tnd-styles/private/GetFonts" . -}}
+{{- with partialCached "tnd-styles/private/ParseFontface" . . -}}
+  @font-face {
+{{- range $key, $val := . }}
+  {{ $key }}: {{ $val }};
+{{- end }}
+}
+{{ end }}
+{{- end -}}
