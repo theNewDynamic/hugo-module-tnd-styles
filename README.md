@@ -83,22 +83,22 @@ The following settings:
 
 ```yaml
 tnd_styles:
-	fonts:
-	- family: Open
-		file: fonts/files/open-sans-v17-latin-regular
-		weight: 400
-		style: normal
-	- family: Open
-		file: fonts/files/open-sans-v17-latin-italic
-		weight: 400
-		style: italic
-	- family: Open
-		file: fonts/files/open-sans-v17-latin-700
-		weight: 700
-	- family: Open
-		file: fonts/files/open-sans-v17-latin-700italic
-		weight: 700
-		style: italic
+  fonts:
+  - family: Open
+    file: fonts/files/open-sans-v17-latin-regular
+    weight: 400
+    style: normal
+  - family: Open
+    file: fonts/files/open-sans-v17-latin-italic
+    weight: 400
+    style: italic
+  - family: Open
+    file: fonts/files/open-sans-v17-latin-700
+    weight: 700
+  - family: Open
+    file: fonts/files/open-sans-v17-latin-700italic
+    weight: 700
+    style: italic
 ```
 
 With the presents of the following files:
