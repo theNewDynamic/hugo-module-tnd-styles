@@ -13,6 +13,7 @@
       String (.file)
       Int (.weight)
       String (.style)
+      Slice (.local)
       Resources (.resources)
 */}}
 {{ $font := . }}
@@ -21,5 +22,13 @@
     {{ $font = merge $font (dict "resources" .) }}
   {{ end }}
 {{ end }}
-
+{{ with .local }}
+  {{ $local := . }}
+  {{/* Local must be a slice, if user enters a string */}}
+  {{ if not (reflect.IsSlice .) }}
+    {{/* We turn it into a slice with that lone string */}}
+    {{ $local = slice . }}
+  {{ end }}
+  {{ $font = merge $font (dict "local" $local ) }}
+{{ end }}
 {{ return $font }}

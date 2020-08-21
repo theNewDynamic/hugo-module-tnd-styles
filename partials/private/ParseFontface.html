@@ -23,9 +23,16 @@
 {{ $s := newScratch }}
 {{ $s.Set "font" dict }}
 
-{{ with partialCached "tnd-styles/private/ParseFont" . . }}
+{{ with $font := partialCached "tnd-styles/private/ParseFont" . . }}
   {{ with .resources }}
     {{ $css_srcs := slice }}
+    {{/* First we add the local() declarations if .local is found */}}
+    {{ with $font.local }}
+      {{ range . }}
+        {{ $css_srcs = $css_srcs | append (printf `local("%s")` .) }}
+      {{ end }}
+    {{ end }}
+
     {{ range . }}
       {{ $format := .MediaType.SubType }}
       {{ if eq $format "vnd.ms-fontobject" }}
