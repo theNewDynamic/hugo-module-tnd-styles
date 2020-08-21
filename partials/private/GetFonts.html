@@ -1,0 +1,30 @@
+{{/*
+  GetFonts
+  Retrieve the list of font declaration set through the Module's settings and add the resources matching the
+  .file value.
+
+  @author @regisphilibert
+
+  @context Any (.)
+
+  @access private
+
+  @use
+    - private/GetConfig
+    - private/ParseFont
+
+  @return Slice of maps
+    - See private/ParseFont
+*/}}
+{{ $fonts := slice }}
+{{ with partialCached "tnd-styles/private/GetConfig" "GetConfig" }}
+  {{ with .fonts }}
+    {{ range . }}
+      {{ with partialCached "tnd-styles/private/ParseFont" . . }}
+        {{ $fonts = $fonts | append . }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ return $fonts }}

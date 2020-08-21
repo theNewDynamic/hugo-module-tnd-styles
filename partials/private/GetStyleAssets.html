@@ -1,3 +1,18 @@
+{{/*
+  GetStyleAssets
+  Groups all the necessary resources by critical or link.
+
+  @author @regisphilibert
+
+  @context Any (.)
+
+  @access private
+
+  @return Slice of Maps
+    Resource (.style=link|critical)
+    String (.type)
+
+*/}}
 {{ $style_assets := slice }}
 {{ $return := slice }}
 
@@ -7,7 +22,8 @@
   {{ $style := false }}
   {{/* If the resource type is scss or sass, we use the sass logic
     we will generate a tailwind file, concatenate it with the processed sass and PostCSS it. */}}
-  {{ if eq .ResourceType "scss" "sass" }}
+  {{ if eq .MediaType.SubType "x-scss" "sass" }}
+    {{ warnf "we have sass "  }}
     {{ $scss := . | toCSS }}
     {{ $tailwind := `
 
@@ -21,16 +37,23 @@
     @import "tailwindcss/utilities";
     ` }}
     {{ $tailwind := $tailwind | resources.FromString "tailwind.css" }}
-    {{ $style = resources.Concat "style.css" (slice $tailwind $scss) }}
+    {{ $style = resources.Concat "style.css" (slice $tailwind $scss) | resources.PostCSS }}
+  {{ else }}
+    {{/* If file is not scss, we simply PostCSS it. */}}
+    {{ $style = . | resources.PostCSS }}
   {{ end }}
-  {{ $style = . | resources.PostCSS }}
+  
   {{ $style_assets = $style_assets | append (dict "style" $style "type" "link") }}
 {{ end }}
 
-{{ with resources.Get "fonts/index.css" }}
-  {{ $style_assets = $style_assets | append (dict "style" . "type" "critical") }}
+{{/* We retrieve the set fonts */}}
+{{ with partialCached "tnd-styles/private/GetFonts" "GetFonts" }}
+  {{/* And generte the @fontface css declaration from a template */}}
+  {{ $fontface := resources.Get "tnd-styles/fonts.css" | resources.ExecuteAsTemplate "fonts.css" "no_context" }}
+  {{ $style_assets = $style_assets | append (dict "style" $fontface "type" "critical") }}
 {{ end }}
 
+{{/* If not server and not critical, we apply more transformations before filling the returned slice */}}
 {{ range $style_assets }}
   {{ $style := . }}
   {{ if and (not site.IsServer) (ne .type "critical") }}

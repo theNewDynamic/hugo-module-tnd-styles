@@ -1,0 +1,25 @@
+{{/*
+  ParseFont
+  Parse data from Module's settings font declaration. For now it only adds a .resources containing the font files assets.
+
+  @author @regisphilibert
+
+  @context Map
+
+  @access private
+
+  @return Map
+      String (.family)
+      String (.file)
+      Int (.weight)
+      String (.style)
+      Resources (.resources)
+*/}}
+{{ $font := . }}
+{{ with .file }}
+  {{ with resources.Match (print "/" . ".*") }}
+    {{ $font = merge $font (dict "resources" .) }}
+  {{ end }}
+{{ end }}
+
+{{ return $font }}
