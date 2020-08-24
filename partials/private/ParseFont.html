@@ -22,13 +22,9 @@
     {{ $font = merge $font (dict "resources" .) }}
   {{ end }}
 {{ end }}
-{{ with .local }}
-  {{ $local := . }}
-  {{/* Local must be a slice, if user enters a string */}}
-  {{ if not (reflect.IsSlice .) }}
-    {{/* We turn it into a slice with that lone string */}}
-    {{ $local = slice . }}
-  {{ end }}
-  {{ $font = merge $font (dict "local" $local ) }}
+
+{{ with partialCached "tnd-styles/private/GetLocals" . . }}
+  {{ $font = merge $font (dict "local" .) }}
 {{ end }}
+
 {{ return $font }}
