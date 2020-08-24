@@ -23,7 +23,6 @@
   {{/* If the resource type is scss or sass, we use the sass logic
     we will generate a tailwind file, concatenate it with the processed sass and PostCSS it. */}}
   {{ if eq .MediaType.SubType "x-scss" "sass" }}
-    {{ warnf "we have sass "  }}
     {{ $scss := . | toCSS }}
     {{ $tailwind := `
 
@@ -56,7 +55,7 @@
 {{/* If not server and not critical, we apply more transformations before filling the returned slice */}}
 {{ range $style_assets }}
   {{ $style := . }}
-  {{ if and (not site.IsServer) (ne .type "critical") }}
+  {{ if and (eq (getenv "HUGO_ENV") "production") (not site.IsServer) (ne .type "critical") }}
     {{ $style = dict "type" .type "style" (.style | minify | fingerprint | resources.PostProcess) }}
   {{ end }}
   {{ $return = $return | append $style }}
