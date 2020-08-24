@@ -34,6 +34,6 @@
 
 {{ range partialCached "tnd-styles/private/GetFonts" . }}
   {{ range .resources }}
-    <link as="font" crossorigin="" href="{{ .Permalink }}" rel="prefetch">
+    <link as="font" crossorigin="" href="{{ .RelPermalink }}" rel="prefetch">
   {{ end }}
 {{ end }}
