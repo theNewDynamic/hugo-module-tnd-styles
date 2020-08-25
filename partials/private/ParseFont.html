@@ -27,6 +27,8 @@
 {{ with .file }}
   {{ with resources.Match (print "/" . ".*") }}
     {{ $font = merge $font (dict "resources" .) }}
+  {{ else }}
+  {{ partial "tnd-styles/warn" (printf "We did not find matching font files for basename `%s`.\nFont files should be added to the project's `assets` directory and match the relative path set in the font's settings." .) }}
   {{ end }}
 {{ end }}
 
