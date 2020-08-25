@@ -11,10 +11,17 @@
   @return Map
       String (.family)
       String (.file)
-      Int (.weight)
-      String (.style)
-      Slice (.local)
       Resources (.resources)
+      Slice (.local)
+      String (.family)?
+      String (.weight)?
+      String (.style)?
+      String (.display)?
+      String (.variant)?
+      String (.feature-settings)?
+      String (.variation-settings)?
+      
+
 */}}
 {{ $font := . }}
 {{ with .file }}

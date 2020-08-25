@@ -79,8 +79,6 @@ module.exports = {
 
 The module automatically generate a <style> tag containing `@fontface` declarations for every declaration set through the module settings on the condition that at least one file matching the base filename set in the declaration exists.
 
-The following settings:
-
 ```yaml
 tnd_styles:
   fonts:
@@ -145,58 +143,78 @@ Will produce the following fontface declarations
   font-family: Open;
   font-style: normal;
   font-weight: 300;
-  src: url("/fonts/files/open-sans-v17-latin-300.eot") format(embedded-opentype), url("/fonts/files/open-sans-v17-latin-300.svg") format(svg), url("/fonts/files/open-sans-v17-latin-300.ttf") format(ttf), url("/fonts/files/open-sans-v17-latin-300.woff") format(woff), url("/fonts/files/open-sans-v17-latin-300.woff2") format(woff2);
+  src: local("Open"),
+    url("/fonts/files/open-sans-v17-latin-300.eot") format("embedded-opentype"),
+    url("/fonts/files/open-sans-v17-latin-300.svg") format("svg"),
+    url("/fonts/files/open-sans-v17-latin-300.ttf") format("truetype"),
+    url("/fonts/files/open-sans-v17-latin-300.woff") format("woff"),
+    url("/fonts/files/open-sans-v17-latin-300.woff2") format("woff2");
 }
 @font-face {
   font-family: Open;
   font-style: italic;
   font-weight: 300;
-  src: url("/fonts/files/open-sans-v17-latin-300italic.eot") format(embedded-opentype),
-			url("/fonts/files/open-sans-v17-latin-300italic.svg") format(svg),
-			url("/fonts/files/open-sans-v17-latin-300italic.ttf") format(ttf), 
-			url("/fonts/files/open-sans-v17-latin-300italic.woff") format(woff), 
-			url("/fonts/files/open-sans-v17-latin-300italic.woff2") format(woff2);
+  src: local("Open"),
+    url("/fonts/files/open-sans-v17-latin-300italic.eot") format("embedded-opentype"),
+    url("/fonts/files/open-sans-v17-latin-300italic.svg") format("svg"),
+    url("/fonts/files/open-sans-v17-latin-300italic.ttf") format("truetype"),
+    url("/fonts/files/open-sans-v17-latin-300italic.woff") format("woff"),
+    url("/fonts/files/open-sans-v17-latin-300italic.woff2") format("woff2");
 }
 @font-face {
   font-family: Open;
   font-weight: 400;
-  src: url("/fonts/files/open-sans-v17-latin-regular.eot") format(embedded-opentype),
-	url("/fonts/files/open-sans-v17-latin-regular.svg") format(svg),
-	url("/fonts/files/open-sans-v17-latin-regular.ttf") format(ttf),
-	url("/fonts/files/open-sans-v17-latin-regular.woff") format(woff),
-	url("/fonts/files/open-sans-v17-latin-regular.woff2") format(woff2);
+  src: local("Open"),
+    url("/fonts/files/open-sans-v17-latin-regular.eot") format("embedded-opentype"),
+    url("/fonts/files/open-sans-v17-latin-regular.svg") format("svg"),
+    url("/fonts/files/open-sans-v17-latin-regular.ttf") format("truetype"),
+    url("/fonts/files/open-sans-v17-latin-regular.woff") format("woff"),
+    url("/fonts/files/open-sans-v17-latin-regular.woff2") format("woff2");
 }
 @font-face {
   font-family: Open;
   font-style: italic;
   font-weight: 400;
-  src: url("/fonts/files/open-sans-v17-latin-italic.eot") format(embedded-opentype),
-	url("/fonts/files/open-sans-v17-latin-italic.svg") format(svg),
-	url("/fonts/files/open-sans-v17-latin-italic.ttf") format(ttf),
-	url("/fonts/files/open-sans-v17-latin-italic.woff") format(woff),
-	url("/fonts/files/open-sans-v17-latin-italic.woff2") format(woff2);
+  src: local("Open"),
+    url("/fonts/files/open-sans-v17-latin-italic.eot") format("embedded-opentype"),
+    url("/fonts/files/open-sans-v17-latin-italic.svg") format("svg"),
+    url("/fonts/files/open-sans-v17-latin-italic.ttf") format("truetype"),
+    url("/fonts/files/open-sans-v17-latin-italic.woff") format("woff"),
+    url("/fonts/files/open-sans-v17-latin-italic.woff2") format("woff2");
 }
 @font-face {
   font-family: Open;
   font-style: normal;
   font-weight: 700;
-  src: url("/fonts/files/open-sans-v17-latin-700.eot") format(embedded-opentype),
-	url("/fonts/files/open-sans-v17-latin-700.svg") format(svg),
-	url("/fonts/files/open-sans-v17-latin-700.ttf") format(ttf),
-	url("/fonts/files/open-sans-v17-latin-700.woff") format(woff),
-	url("/fonts/files/open-sans-v17-latin-700.woff2") format(woff2);
+  src: local("Open"),
+    url("/fonts/files/open-sans-v17-latin-700.eot") format("embedded-opentype"),
+    url("/fonts/files/open-sans-v17-latin-700.svg") format("svg"),
+    url("/fonts/files/open-sans-v17-latin-700.ttf") format("truetype"),
+    url("/fonts/files/open-sans-v17-latin-700.woff") format("woff"),
+    url("/fonts/files/open-sans-v17-latin-700.woff2") format("woff2");
 }
 @font-face {
   font-family: Open;
   font-style: italic;
   font-weight: 700;
-  src: url("/fonts/files/open-sans-v17-latin-700italic.eot") format(embedded-opentype),
-	url("/fonts/files/open-sans-v17-latin-700italic.svg") format(svg),
-	url("/fonts/files/open-sans-v17-latin-700italic.ttf") format(ttf),
-	url("/fonts/files/open-sans-v17-latin-700italic.woff") format(woff),
-	url("/fonts/files/open-sans-v17-latin-700italic.woff2") format(woff2);
+  src: local("Open"),
+    url("/fonts/files/open-sans-v17-latin-700italic.eot") format("embedded-opentype"),
+    url("/fonts/files/open-sans-v17-latin-700italic.svg") format("svg"),
+    url("/fonts/files/open-sans-v17-latin-700italic.ttf") format("truetype"),
+    url("/fonts/files/open-sans-v17-latin-700italic.woff") format("woff"),
+    url("/fonts/files/open-sans-v17-latin-700italic.woff2") format("woff2");
 }
 ```
+
+Accepted style settings are:
+
+- family
+- weight
+- style
+- display
+- variant
+- feature-settings
+- variation-settings
 
 The module also prefetches every declared font files
 
