@@ -1,0 +1,36 @@
+{{/*
+  GetProcessedAsset
+  wrap the asset processing logic
+
+
+  @author @regisphilibert
+
+  @context Resource (.)
+
+  @access private
+
+*/}}
+{{ $style := false }}
+  {{/* If the resource type is scss or sass, we use the sass logic
+    we will generate a tailwind file, concatenate it with the processed sass and PostCSS it. */}}
+{{ if eq .MediaType.SubType "x-scss" "sass" }}
+  {{ $scss := . | toCSS }}
+  {{ $tailwind := `
+
+  /* purgecss start ignore */
+  @import "tailwindcss/base";
+  
+  @import "tailwindcss/components";
+  
+  /* purgecss end ignore */
+  
+  @import "tailwindcss/utilities";
+  ` }}
+  {{ $tailwind := $tailwind | resources.FromString "tailwind.css" }}
+  {{ $style = resources.Concat "style.css" (slice $tailwind $scss) | resources.PostCSS }}
+{{ else }}
+  {{/* If file is not scss, we simply PostCSS it. */}}
+  {{ $style = . | resources.PostCSS }}
+{{ end }}
+
+{{ return $style }}
