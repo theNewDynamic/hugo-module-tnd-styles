@@ -17,32 +17,28 @@
 {{ $return := slice }}
 
 {{ $to_bundle := slice }}
-{{/* We look for a style.* file */}}
-{{ with resources.GetMatch "css/style.*" }}
-  {{ $style := false }}
-  {{/* If the resource type is scss or sass, we use the sass logic
-    we will generate a tailwind file, concatenate it with the processed sass and PostCSS it. */}}
-  {{ if eq .MediaType.SubType "x-scss" "sass" }}
-    {{ $scss := . | toCSS }}
-    {{ $tailwind := `
 
-    /* purgecss start ignore */
-    @import "tailwindcss/base";
-    
-    @import "tailwindcss/components";
-    
-    /* purgecss end ignore */
-    
-    @import "tailwindcss/utilities";
-    ` }}
-    {{ $tailwind := $tailwind | resources.FromString "tailwind.css" }}
-    {{ $style = resources.Concat "style.css" (slice $tailwind $scss) | resources.PostCSS }}
-  {{ else }}
-    {{/* If file is not scss, we simply PostCSS it. */}}
-    {{ $style = . | resources.PostCSS }}
+{{ $config := partialCached "tnd-styles/private/GetConfig" . "GetConfig" }}
+
+{{/* We look for a style.* file */}}
+{{ with $config.styles }}
+  {{ range $registered_style := . }}
+    {{ with .path }}
+      {{ with resources.GetMatch . }}
+        {{ $style := partial "tnd-styles/private/GetProcessedAsset" . }}
+        {{ $type := "link" }}
+        {{ with $registered_style.type }}
+          {{ $type = . }}
+        {{ end }}
+        {{ $style_assets = $style_assets | append (dict "style" $style "type" $type) }}
+      {{ end }}
+    {{ end }}
   {{ end }}
-  
-  {{ $style_assets = $style_assets | append (dict "style" $style "type" "link") }}
+{{ else }}
+  {{ with resources.GetMatch "css/style.*" }}
+    {{ $style := partial "tnd-styles/private/GetProcessedAsset" }}
+    {{ $style_assets = $style_assets | append (dict "style" $style "type" "link") }}
+  {{ end }}
 {{ end }}
 
 {{/* We retrieve the set fonts */}}
@@ -55,7 +51,7 @@
 {{/* If not server and not critical, we apply more transformations before filling the returned slice */}}
 {{ range $style_assets }}
   {{ $style := . }}
-  {{ if and (eq (getenv "HUGO_ENV") "production") (not site.IsServer) (ne .type "critical") }}
+  {{ if and (eq (getenv "HUGO_ENV") "production") (not site.IsServer) }}
     {{ $style = dict "type" .type "style" (.style | minify | fingerprint | resources.PostProcess) }}
   {{ end }}
   {{ $return = $return | append $style }}

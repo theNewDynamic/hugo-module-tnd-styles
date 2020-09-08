@@ -44,6 +44,18 @@ assets
 │       └── tailwind.config.js
 ```
 
+Module will look for an `assets/css/style.css` or `assets/css/style.scss`. 
+
+If the project's main style asset lives elsewhere, user can use the `styles` settings to register any number of files which will be processed and loaded by the Module.
+
+```yaml
+tnd_styles:
+  styles:
+    - path: css/styles/index.scss
+    - path: css/styles/home-hero.css
+      type: critical
+```
+
 ### Tailwind and PostCSS
 
 In order to use Tailwind and/or PostCSS user should 
