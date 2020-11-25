@@ -241,7 +241,7 @@ The partial should be invoked in your `<head>` and will print all the necessary 
 [...]
 {{ partial "tnd-styles/tags.html" . }}
 </head>
-
+```
 
 ## theNewDynamic
 
