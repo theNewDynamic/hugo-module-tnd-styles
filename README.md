@@ -236,6 +236,13 @@ The module also prefetches every declared font files
 
 The partial should be invoked in your `<head>` and will print all the necessary tags discussed above.
 
+```
+<head>
+[...]
+{{ partial "tnd-styles/tags.html" . }}
+</head>
+
+
 ## theNewDynamic
 
 This project is maintained and love by [thenewDynamic](https://www.thenewdynamic.com).
