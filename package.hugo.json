@@ -1,0 +1,26 @@
+{
+  "name": "hugo-module-tnd-styles",
+  "version": "0.1.5",
+  "description": "Hugo Module to process CSS Assets with Sass and PostCSS",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theNewDynamic/hugo-module-tnd-styles.git"
+  },
+  "keywords": [
+    "hugo",
+    "module",
+    "postcss",
+    "tailwindcss"
+  ],
+  "author": "theNewDynamic",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/theNewDynamic/hugo-module-tnd-styles/issues"
+  },
+  "homepage": "https://github.com/theNewDynamic/hugo-module-tnd-styles#readme",
+  "devDependencies": {
+    "postcss-cli": "^7.1.0",
+    "postcss-import": "^12.0.1",
+    "tailwindcss": "^2.0.2"
+  }
+}
