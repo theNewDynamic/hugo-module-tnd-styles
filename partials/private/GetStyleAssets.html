@@ -36,7 +36,7 @@
   {{ end }}
 {{ else }}
   {{ with resources.GetMatch "css/style.*" }}
-    {{ $style := partial "tnd-styles/private/GetProcessedAsset" }}
+    {{ $style := partial "tnd-styles/private/GetProcessedAsset" . }}
     {{ $style_assets = $style_assets | append (dict "style" $style "type" "link") }}
   {{ end }}
 {{ end }}
