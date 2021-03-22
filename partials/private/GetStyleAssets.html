@@ -51,7 +51,9 @@
 {{/* If not server and not critical, we apply more transformations before filling the returned slice */}}
 {{ range $style_assets }}
   {{ $style := . }}
-  {{ if and (eq (getenv "HUGO_ENV") "production") (not site.IsServer) }}
+  {{ $not_dev := ne (getenv "HUGO_ENV") "development" }}
+  {{ $not_server := not site.IsServer }}
+  {{ if and $not_dev $not_server }}
     {{ $style = dict "type" .type "style" (.style | minify | fingerprint | resources.PostProcess) }}
   {{ end }}
   {{ $return = $return | append $style }}
