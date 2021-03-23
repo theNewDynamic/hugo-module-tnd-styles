@@ -23,21 +23,25 @@
 {{/* We look for a style.* file */}}
 {{ with $config.styles }}
   {{ range $registered_style := . }}
-    {{ with .path }}
+    {{ with $path := .path }}
       {{ with resources.GetMatch . }}
         {{ $style := partial "tnd-styles/private/GetProcessedAsset" . }}
         {{ $type := "link" }}
         {{ with $registered_style.type }}
           {{ $type = . }}
         {{ end }}
-        {{ $style_assets = $style_assets | append (dict "style" $style "type" $type) }}
+        {{ $name := $path }}
+        {{ with $registered_style.name }}
+          {{ $name = . }}
+        {{ end }}
+        {{ $style_assets = $style_assets | append (dict "style" $style "type" $type "name" $name) }}
       {{ end }}
     {{ end }}
   {{ end }}
 {{ else }}
   {{ with resources.GetMatch "css/style.*" }}
     {{ $style := partial "tnd-styles/private/GetProcessedAsset" . }}
-    {{ $style_assets = $style_assets | append (dict "style" $style "type" "link") }}
+    {{ $style_assets = $style_assets | append (dict "style" $style "type" "link" "name" "main") }}
   {{ end }}
 {{ end }}
 
@@ -45,7 +49,7 @@
 {{ with partialCached "tnd-styles/private/GetFonts" "GetFonts" }}
   {{/* And generte the @fontface css declaration from a template */}}
   {{ $fontface := resources.Get "tnd-styles/fonts.css" | resources.ExecuteAsTemplate "fonts.css" "no_context" }}
-  {{ $style_assets = $style_assets | append (dict "style" $fontface "type" "critical") }}
+  {{ $style_assets = $style_assets | append (dict "style" $fontface "type" "critical" "name" "fonts") }}
 {{ end }}
 
 {{/* If not server and not critical, we apply more transformations before filling the returned slice */}}
@@ -54,7 +58,7 @@
   {{ $not_dev := ne (getenv "HUGO_ENV") "development" }}
   {{ $not_server := not site.IsServer }}
   {{ if and $not_dev $not_server }}
-    {{ $style = dict "type" .type "style" (.style | minify | fingerprint | resources.PostProcess) }}
+    {{ $style = dict "type" .type "name" .name "style" (.style | minify | fingerprint | resources.PostProcess) }}
   {{ end }}
   {{ $return = $return | append $style }}
 {{ end }}
