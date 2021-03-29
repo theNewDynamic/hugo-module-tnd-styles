@@ -16,17 +16,10 @@
 {{ if eq .MediaType.SubType "x-scss" "sass" }}
   {{ $scss := . | toCSS }}
   {{ $tailwind := `
-
-  /* purgecss start ignore */
-  @import "tailwindcss/base";
-  
-  @import "tailwindcss/components";
-  
-  /* purgecss end ignore */
-  
-  @import "tailwindcss/utilities";
+    @tailwind base;
+    @tailwind utilities;
   ` }}
-  {{ $tailwind := $tailwind | resources.FromString "tailwind.css" }}
+  {{ $tailwind = $tailwind | resources.FromString "tailwind.css" }}
   {{ $style = resources.Concat "style.css" (slice $tailwind $scss) | resources.PostCSS }}
 {{ else }}
   {{/* If file is not scss, we simply PostCSS it. */}}
