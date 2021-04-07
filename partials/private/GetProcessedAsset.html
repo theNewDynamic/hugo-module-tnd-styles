@@ -20,7 +20,7 @@
     @tailwind utilities;
   ` }}
   {{ $tailwind = $tailwind | resources.FromString "tailwind.css" }}
-  {{ $style = resources.Concat "style.css" (slice $tailwind $scss) | resources.PostCSS }}
+  {{ $style = resources.Concat "style.css" (slice $scss $tailwind ) | resources.PostCSS }}
 {{ else }}
   {{/* If file is not scss, we simply PostCSS it. */}}
   {{ $style = . | resources.PostCSS }}
