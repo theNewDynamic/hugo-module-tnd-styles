@@ -8,3 +8,5 @@ module:
     target: layouts/partials/tnd-styles
   - source: console
     target: layouts/partials/tnd-styles
+  imports:
+  - path: github.com/theNewDynamic/hugo-module-tnd-tags
