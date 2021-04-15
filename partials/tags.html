@@ -15,7 +15,8 @@
       [...]
     </head>
 */}}
-{{ $styles := partialCached "tnd-styles/private/GetStyleAssets" "GetStyleAssets" }}
+{{ $registered_styles := partialCached "tnd-styles/private/GetStyleAssets" "GetStyleAssets" }}
+{{ $selected_styles := slice }}
 
 {{/* If context is a Slice, user wants to limit printed style to their list. */}}
 {{ if reflect.IsSlice $ }}
@@ -24,10 +25,15 @@
   {{ if and (in $list "main") (not (in $list "fonts")) }}
     {{ $list = $list | append "fonts" }}
   {{ end }}
-  {{ $styles = where $styles ".name" "in" $list }}
+  {{ range $list }}
+    {{ with where $registered_styles ".name" . }}
+      {{ $selected_styles = $selected_styles | append . }}
+    {{ end }}
+  {{ end }}
 {{ end }}
 
-{{ range $styles }}
+{{/* We're ready to print the tags for selected styles */}}
+{{ range $selected_styles }}
   {{ if eq .type "critical" }}
     {{ with .style }}
       {{ $tag := dict "name" "style" "inner" .Content }}
@@ -41,7 +47,9 @@
   {{ end }}
 {{ end }}
 
-{{ with where $styles ".name" "in" (slice "main" "fonts") }}
+{{/* If we have either "main" or "fonts" in the user selected list, 
+we'll print font pre-connect */}}
+{{ with where $selected_styles ".name" "in" (slice "main" "fonts") }}
   {{ range partialCached "tnd-styles/private/GetFonts" "GetFonts" }}
     {{ range .resources }}
       {{ $tag := dict "name" "link" "attr" (dict "href" .RelPermalink "as" "font" "crossorigin" " " "rel" "prefetch") }}
