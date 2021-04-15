@@ -15,25 +15,45 @@
       [...]
     </head>
 */}}
-{{ $styles := partialCached "tnd-styles/private/GetStyleAssets" "GetStyleAssets" }}
+{{ $registered_styles := partialCached "tnd-styles/private/GetStyleAssets" "GetStyleAssets" }}
+{{ $selected_styles := slice }}
 
-{{ range where $styles "type" "==" "critical" }}
-  {{ with .style }}
-    <style>{{ .Content | safeCSS }}</style>
+{{/* If context is a Slice, user wants to limit printed style to their list. */}}
+{{ if reflect.IsSlice $ }}
+  {{ $list := $ }}
+  {{/* If user lists "main" but not "fonts" we add them. */}}
+  {{ if and (in $list "main") (not (in $list "fonts")) }}
+    {{ $list = $list | append "fonts" }}
+  {{ end }}
+  {{ range $list }}
+    {{ with where $registered_styles ".name" . }}
+      {{ $selected_styles = $selected_styles | append . }}
+    {{ end }}
   {{ end }}
 {{ end }}
 
-{{ range where $styles "type" "!=" "critical" }}
-  {{ with .style }}
-    <link 
-      rel="stylesheet"
-      href="{{ .RelPermalink }}"
-    >
+{{/* We're ready to print the tags for selected styles */}}
+{{ range $selected_styles }}
+  {{ if eq .type "critical" }}
+    {{ with .style }}
+      {{ $tag := dict "name" "style" "inner" .Content }}
+      {{ partial "tnd-tags/tag" $tag }}
+    {{ end }}
+  {{ else }}
+    {{ with .style }}
+      {{ $tag := dict "name" "link" "attr" (dict "href" .RelPermalink "rel" "stylesheet") }}
+      {{ partial "tnd-tags/tag" $tag }}
+    {{ end }}
   {{ end }}
 {{ end }}
 
-{{ range partialCached "tnd-styles/private/GetFonts" . }}
-  {{ range .resources }}
-    <link as="font" crossorigin="" href="{{ .RelPermalink }}" rel="prefetch">
+{{/* If we have either "main" or "fonts" in the user selected list, 
+we'll print font pre-connect */}}
+{{ with where $selected_styles ".name" "in" (slice "main" "fonts") }}
+  {{ range partialCached "tnd-styles/private/GetFonts" "GetFonts" }}
+    {{ range .resources }}
+      {{ $tag := dict "name" "link" "attr" (dict "href" .RelPermalink "as" "font" "crossorigin" " " "rel" "prefetch") }}
+      {{ partial "tnd-tags/tag" $tag }}
+    {{ end }}
   {{ end }}
 {{ end }}
