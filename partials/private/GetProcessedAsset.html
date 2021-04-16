@@ -5,26 +5,20 @@
 
   @author @regisphilibert
 
-  @context Resource (.)
+  @context Map 
+      Map (.info)
+      Resource (.resource)
 
   @access private
 
+  @return Resource
+
 */}}
-{{ $style := false }}
-  {{/* If the resource type is scss or sass, we use the sass logic
-    we will generate a tailwind file, concatenate it with the processed sass and PostCSS it. */}}
-{{ if eq .MediaType.SubType "x-scss" "sass" }}
-  {{ $scss := . | toCSS }}
-  {{ $tailwind := printf `
-    @tailwind base;
-    %s
-    @tailwind components;
-    @tailwind utilities;
-  ` $scss.Content }}
-  {{ $style = $tailwind | resources.FromString "style.css" | resources.PostCSS }}
+{{ $style := dict }}
+{{ if eq .info.name "main" }}
+  {{ $style = partial "tnd-styles/private/process/main" . }}
 {{ else }}
-  {{/* If file is not scss, we simply PostCSS it. */}}
-  {{ $style = . | resources.PostCSS }}
+  {{ $style = partial "tnd-styles/private/process/default" . }}
 {{ end }}
 
 {{ return $style }}

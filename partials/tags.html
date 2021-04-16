@@ -16,10 +16,11 @@
     </head>
 */}}
 {{ $registered_styles := partialCached "tnd-styles/private/GetStyleAssets" "GetStyleAssets" }}
-{{ $selected_styles := slice }}
+{{ $selected_styles := $registered_styles }}
 
 {{/* If context is a Slice, user wants to limit printed style to their list. */}}
 {{ if reflect.IsSlice $ }}
+  {{ $selected_styles = slice }}
   {{ $list := $ }}
   {{/* If user lists "main" but not "fonts" we add them. */}}
   {{ if and (in $list "main") (not (in $list "fonts")) }}
@@ -34,7 +35,19 @@
 
 {{/* We're ready to print the tags for selected styles */}}
 {{ range $selected_styles }}
-  {{ if eq .type "critical" }}
+
+  {{/* We check if the style should be inlined or not */}}
+  {{ $inline := false }}
+  {{ with .type }}
+    {{ if eq . "critical" }}
+      {{ $inline = true }}
+    {{ end }}
+  {{ end }}
+  {{ with .inline }}
+    {{ $inline = true }}
+  {{ end }}
+  
+  {{ if $inline }}
     {{ with .style }}
       {{ $tag := dict "name" "style" "inner" .Content }}
       {{ partial "tnd-tags/tag" $tag }}

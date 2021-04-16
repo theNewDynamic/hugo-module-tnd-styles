@@ -28,32 +28,26 @@ module:
   - path: github.com/theNewDynamic/hugo-module-tnd-styles
 ```
 
-## Usage
 
-User should respect a file structure in its asset directory:
 
-```
-assets
-├── css
-│   ├── style.css
-│   └── tailwindcss
-│       ├── modules
-│       │   ├── _hovers.css
-│       │   ├── _buttons.css
-│       │   └── _cards.css
-│       └── tailwind.config.js
-```
+## Configuration
 
-Module will look for an `assets/css/style.css` or `assets/css/style.scss`. 
+### Registered styles.
+Without any configuration, the Module will consider `/assets/css/style.{css|scss}` a lone registered script of name `main`.
 
-If the project's main style asset lives elsewhere, user can use the `styles` settings to register any number of files which will be processed and loaded by the Module.
+In order to add more registrered style, user should reference them (including main) under the `styles` key of the module configuration with the following keys:
+__name__: The name of the style. Will be use to call it through the `tnd-styles/tags` partial`
+__path__: The `path` relative to the project's assets directory.
+__inline__: If set to true, the style will be printed inside a `<style>` tag rather than as a `<link>` request.
 
 ```yaml
 tnd_styles:
   styles:
-    - path: css/styles/index.scss
-    - path: css/styles/home-hero.css
-      type: critical
+    - name: main
+      path: css/styles/index.scss
+    - name: carousel
+      path: css/styles/carousel.css
+      inline: true
 ```
 
 ### Tailwind and PostCSS
@@ -63,28 +57,17 @@ In order to use Tailwind and/or PostCSS user should
 ```
 npm install postcss-cli postcss-import tailwindcss autoprefixer
 ```
-2. Add a postcss.config.js file at the root of the repo:
-```
-const purgecss = require("@fullhuman/postcss-purgecss")({
-	content: ["./hugo_stats.json"],
-	defaultExtractor: (content) => {
-		let els = JSON.parse(content).htmlElements;
-		return els.tags.concat(els.classes, els.ids);
-	},
-	whitelist: [
-		"extra_class"
-	],
-});
+2. Add a postcss.config.js file at the root of the repo: (tailwind config path should match user's)
+```js
 module.exports = {
-	plugins: [
-		require("postcss-import")({
-			path: ["assets/css"],
-		}),
-		require("tailwindcss")("./assets/css/tailwindcss/tailwind.config.js"),
-		require("autoprefixer"),
-		...(process.env.HUGO_ENV !== "development" ? [purgecss] : []),
-	],
-};
+  plugins: [
+    require("postcss-import")({
+      path: ["assets/css"],
+    }),
+    require("tailwindcss")("./assets/css/config/tailwind.config.js"),
+  ],
+};name: 
+
 ```
 
 ### Fonts
@@ -236,10 +219,21 @@ The module also prefetches every declared font files
 
 The partial should be invoked in your `<head>` and will print all the necessary tags discussed above.
 
+If user need to single out styles from the registered styles, context shoulce be a slice:
+
 ```
 <head>
 [...]
-{{ partial "tnd-styles/tags.html" . }}
+{{ partialCached "tnd-styles/tags.html" (slice "main" "carousel") "main" "carousel" }}
+</head>
+```
+
+If another type is passed as context, module will print all the registered styles. If no registered styles is found, module will print the main style.
+
+```
+<head>
+[...]
+{{ partialCached "tnd-styles/tags.html" "tags" }}
 </head>
 ```
 

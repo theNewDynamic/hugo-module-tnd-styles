@@ -25,7 +25,7 @@
   {{ range $registered_style := . }}
     {{ with $path := .path }}
       {{ with resources.GetMatch . }}
-        {{ $style := partial "tnd-styles/private/GetProcessedAsset" . }}
+        {{ $style := partial "tnd-styles/private/GetProcessedAsset" (dict "info" $registered_style "resource" .) }}
         {{ $type := "link" }}
         {{ with $registered_style.type }}
           {{ $type = . }}
@@ -40,7 +40,8 @@
   {{ end }}
 {{ else }}
   {{ with resources.GetMatch "css/style.*" }}
-    {{ $style := partial "tnd-styles/private/GetProcessedAsset" . }}
+    {{ $info := dict "name" "main" }}
+    {{ $style := partial "tnd-styles/private/GetProcessedAsset" (dict "info" $info "resource" .) }}
     {{ $style_assets = $style_assets | append (dict "style" $style "type" "link" "name" "main") }}
   {{ end }}
 {{ end }}
