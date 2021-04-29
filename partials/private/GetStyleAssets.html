@@ -59,7 +59,7 @@
   {{ $not_dev := ne (getenv "HUGO_ENV") "development" }}
   {{ $not_server := not site.IsServer }}
   {{ if and $not_dev $not_server }}
-    {{ $style = dict "type" .type "name" .name "style" (.style | fingerprint | resources.PostProcess) }}
+    {{ $style = dict "type" .type "name" .name "style" (.style| minify | fingerprint | resources.PostProcess) }}
   {{ end }}
   {{ $return = $return | append $style }}
 {{ end }}
