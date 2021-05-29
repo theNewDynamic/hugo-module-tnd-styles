@@ -17,11 +17,10 @@
 {{ with .resource }}
   {{/* If the resource type is scss or sass, we use the sass logic
     we will generate a tailwind file, concatenate it with the processed sass and PostCSS it. */}}
-  {{ if eq .MediaType.SubType "x-scss" "sass" }}
-    {{ $style = . | toCSS }}
-  {{ end }}
-
-  {{ $style = . | resources.PostCSS }}
+    {{ if eq .MediaType.SubType "x-scss" "sass" }}
+      {{ $style = . | toCSS }}
+    {{ end }}
+  {{ $style = $style | resources.PostCSS }}
 {{ end }}
 
 {{ return $style }}
