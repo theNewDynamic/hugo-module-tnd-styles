@@ -26,15 +26,20 @@
     {{ with $path := .path }}
       {{ with resources.GetMatch . }}
         {{ $style := partial "tnd-styles/private/GetProcessedAsset" (dict "info" $registered_style "resource" .) }}
-        {{ $type := "link" }}
+        {{ $inline := false }}
         {{ with $registered_style.type }}
-          {{ $type = . }}
+          {{ if eq . "critical" }}
+            {{ $inline = true }}
+          {{ end }}
+        {{ end }}
+        {{ with $registered_style.inline }}
+          {{ $inline = true }}
         {{ end }}
         {{ $name := $path }}
         {{ with $registered_style.name }}
           {{ $name = . }}
         {{ end }}
-        {{ $style_assets = $style_assets | append (dict "style" $style "type" $type "name" $name) }}
+        {{ $style_assets = $style_assets | append (dict "style" $style "inline" $inline "name" $name) }}
       {{ end }}
     {{ end }}
   {{ end }}
@@ -42,7 +47,7 @@
   {{ with resources.GetMatch "css/style.*" }}
     {{ $info := dict "name" "main" }}
     {{ $style := partial "tnd-styles/private/GetProcessedAsset" (dict "info" $info "resource" .) }}
-    {{ $style_assets = $style_assets | append (dict "style" $style "type" "link" "name" "main") }}
+    {{ $style_assets = $style_assets | append (dict "style" $style "name" "main") }}
   {{ end }}
 {{ end }}
 
@@ -50,7 +55,7 @@
 {{ with partialCached "tnd-styles/private/GetFonts" "GetFonts" }}
   {{/* And generte the @fontface css declaration from a template */}}
   {{ $fontface := resources.Get "tnd-styles/fonts.css" | resources.ExecuteAsTemplate "fonts.css" "no_context" }}
-  {{ $style_assets = $style_assets | append (dict "style" $fontface "type" "critical" "name" "fonts") }}
+  {{ $style_assets = $style_assets | append (dict "style" $fontface "inline" true "name" "fonts") }}
 {{ end }}
 
 {{/* If not server and not critical, we apply more transformations before filling the returned slice */}}
@@ -59,7 +64,7 @@
   {{ $not_dev := ne (getenv "HUGO_ENV") "development" }}
   {{ $not_server := not site.IsServer }}
   {{ if and $not_dev $not_server }}
-    {{ $style = dict "type" .type "name" .name "style" (.style| minify | fingerprint | resources.PostProcess) }}
+    {{ $style = dict "inline" .inline "name" .name "style" (.style| minify | fingerprint | resources.PostProcess) }}
   {{ end }}
   {{ $return = $return | append $style }}
 {{ end }}
