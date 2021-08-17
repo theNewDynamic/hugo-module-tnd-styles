@@ -236,7 +236,16 @@ If another type is passed as context, module will print all the registered style
 {{ partialCached "tnd-styles/tags.html" "tags" }}
 </head>
 ```
-
+### tnd-styes/tags only for fonts
+If user only needs to use the fonts:
+ 
+```
+<head>
+[...]
+{{ partialCached "tnd-styles/tags.html" (slice "fonts") "fonts" }}
+</head>
+```
+  
 ## theNewDynamic
 
 This project is maintained and love by [thenewDynamic](https://www.thenewdynamic.com).
